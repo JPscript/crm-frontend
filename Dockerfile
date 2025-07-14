@@ -1,12 +1,23 @@
-FROM node:20.12.2-alpine3.19
-# Set the working directory in the container
+# 1. Build Stage: Construye la app Angular con Node 22
+FROM node:22 AS build
+
 WORKDIR /app
 
-# Copy package.json and package-lock.json to leverage Docker cache
-# and install dependencies
-COPY package.json package-lock.json ./
+COPY package*.json ./
 RUN npm install
 
-# Copy the rest of the application code
 COPY . .
-CMD ng serve
+RUN npm run build --prod
+
+# 2. Production Stage: Sirve con Nginx
+FROM nginx:alpine
+
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Si tu build va en dist/mi-app, cambia la ruta aquí:
+COPY --from=build /app/dist/crm-frontend /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
