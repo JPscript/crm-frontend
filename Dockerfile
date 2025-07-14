@@ -7,7 +7,7 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-RUN npm run build --prod
+RUN npm run build
 
 # 2. Production Stage: Sirve con Nginx
 FROM nginx:alpine
