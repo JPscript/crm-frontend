@@ -14,9 +14,11 @@ FROM nginx:alpine
 
 RUN rm /etc/nginx/conf.d/default.conf
 
-# Si tu build va en dist/mi-app, cambia la ruta aquí:
-COPY --from=build /app/dist/crm-frontend /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d
+# Copia SOLO la carpeta browser (es donde está el build para servir)
+COPY --from=build /app/dist/crm-frontend/browser /usr/share/nginx/html
+
+# Copia el archivo de configuración de nginx (asegúrate que se llame nginx.conf en la raíz)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
