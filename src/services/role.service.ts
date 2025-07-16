@@ -10,7 +10,7 @@ import { HttpResponse } from '@angular/common/http';
   providedIn: 'root'
 })
 export class RoleService {
-  private apiUrl = 'http://localhost:8081/roles'; 
+  private apiUrl = 'https://crm-backend-production-5a64.up.railway.app/roles'; 
 
   constructor(private http: HttpClient) {}
 
