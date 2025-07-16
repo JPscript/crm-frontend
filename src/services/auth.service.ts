@@ -32,6 +32,7 @@ export class AuthService {
         observe: 'response',
       })
     ));
+    console.log('registerAppUser response:', result);
     return Array.isArray(result) ? [result[0], null] : [null, result];
   }
 
@@ -43,6 +44,7 @@ export class AuthService {
         observe: 'response',
       }).toPromise()
     );
+    console.log('login response:', result);
     return Array.isArray(result) ? [result[0], null] : [null, result];
   }
 
@@ -52,29 +54,35 @@ export class AuthService {
         withCredentials: true,
         observe: 'response'
       }).toPromise();
-
+      console.log('getLoggedUser response:', response);
       if (response?.body?.type === 'OK') {
         return response.body.data as AppUser;
       } else {
         return null;
       }
     } catch (error) {
+      console.log('getLoggedUser error:', error);
       return null;
     }
   }
 
   async logout() {
     try {
-      await this.http.post(this.LOGOUT_URL, {}, { withCredentials: true }).toPromise();
+      const response = await this.http.post(this.LOGOUT_URL, {}, { withCredentials: true }).toPromise();
+      console.log('logout response:', response);
       this.currentUser = null;
       this.router.navigate(['/login']);
     } catch (err) {
+      console.log('logout error:', err);
       alert('Error al cerrar sesión. Por favor, inténtelo de nuevo más tarde.');
     }
   }
 
   getAllRoles(): Promise<[any, any]> {
-    return to(this.http.get(this.ROLES_URL).toPromise());
+    return to(this.http.get(this.ROLES_URL).toPromise().then((response) => {
+      console.log('getAllRoles response:', response);
+      return response;
+    }));
   }
 
   getCurrentUser(): AppUser | null {
